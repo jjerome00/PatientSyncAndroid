@@ -49,7 +49,7 @@ class LocalClient(private val context: Context) : Interceptor {
         val url = chain.request().url()
         val request = chain.request()
         when (url.encodedPath()) {
-            "patients" -> {
+            "/patients" -> {
                 val response = getMockDataFile("patient.json")
                 return Response.Builder()
                     .code(200)

@@ -6,6 +6,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface PatientEndpointService {
-    @GET("Patients")
+    @GET("patients")
     fun getPatientListAsync(): Deferred<Response<List<Patient>>>
 }
