@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "firstName": "Jason",
+    "lastName": "Jerome",
+    "pulse": {
+      "reading": 60,
+      "lastUpdate": "2019-10-08T11:23:00.681867Z"
+    }
+  }
+]
