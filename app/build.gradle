@@ -3,6 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+def test_endpoint = "\"https://test-server\""
+
+def patient_endpoint_url = { ->
+    return project.hasProperty('PatientEndpointUrl') ? PatientEndpointUrl : test_endpoint
+}
+
 android {
     compileSdkVersion 28
     buildToolsVersion "29.0.2"
@@ -13,6 +19,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "PATIENT_ENDPOINT", "$patient_endpoint_url"
+        buildConfigField "String", "TEST_ENDPOINT", "$test_endpoint"
     }
     buildTypes {
         release {

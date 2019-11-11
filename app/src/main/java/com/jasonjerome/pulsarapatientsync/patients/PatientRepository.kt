@@ -28,11 +28,14 @@ class PatientRepository(
 
         GlobalScope.launch {
             try {
-                val request = patientEndpoint.getPatientListAsync()
+                val request = patientEndpoint.getPatientResponseAsync()
                 val response = request.await()
-                response.body()?.let { patientList ->
-                    patientList.forEach {
-                        patientListDAO.insert(it)
+                response.body()?.let { response ->
+                    if (response.message.compareTo("success")  == 0) {
+                        val patientList = response.data
+                        patientList.forEach {
+                            patientListDAO.insert(it)
+                        }
                     }
                 }
             } catch (e: IOException) {

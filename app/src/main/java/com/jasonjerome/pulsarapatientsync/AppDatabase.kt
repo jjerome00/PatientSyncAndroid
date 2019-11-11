@@ -6,17 +6,22 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.jasonjerome.pulsarapatientsync.dataModels.Patient
 import com.jasonjerome.pulsarapatientsync.patients.db.PatientListDAO
+import java.text.SimpleDateFormat
 import java.util.*
 
 class Converters {
-    @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
+    companion object {
+        const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS"
     }
 
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time?.toLong()
+    fun fromTimestamp(value: String?): Date? {
+        return SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).parse(value)
+    }
+
+    @TypeConverter
+    fun dateToTimestamp(date: Date?): String? {
+        return SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(date)
     }
 }
 
