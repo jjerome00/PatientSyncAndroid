@@ -43,8 +43,8 @@ class PatientListAdapter(
         fun bind(item: Patient) {
             this.item = item
             view.patient_name.text = item.fullName
-            view.pulse.text = item.pulse.formattedPulseReading
-            view.last_updated.text = item.pulse.formattedLastUpdate
+            view.pulse.text = item.formattedPulseReading
+            view.last_updated.text = item.formattedLastUpdate
         }
     }
 

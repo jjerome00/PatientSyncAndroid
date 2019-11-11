@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.jasonjerome.pulsarapatientsync.R
+import com.jasonjerome.pulsarapatientsync.patients.adapters.PatientListAdapter
 import com.jasonjerome.pulsarapatientsync.patients.adapters.PatientSelectedCallback
 import com.jasonjerome.pulsarapatientsync.patients.viewmodels.PatientListViewModel
 import kotlinx.android.synthetic.main.patient_list_activity.*
@@ -32,15 +33,14 @@ class PatientListActivity : AppCompatActivity(), AnkoLogger {
     }
 
     private fun getData() {
-        viewModel.getPatientList(patientSelectedCallback)
+        viewModel.getPatients().observe(this, Observer { result ->
+            val adapter = PatientListAdapter(ArrayList(result), patientSelectedCallback)
+            patientListRecycler.adapter = adapter
+            viewModel.setLoadingIndicatorDisplay(false)
+        })
     }
 
     private fun configureLiveDataObservers() {
-        viewModel.getPatientListLiveData().observe(this, Observer { result ->
-            result.contentIfNotHandled?.let { adapter ->
-                patientListRecycler.adapter = adapter
-            }
-        })
         viewModel.getDisplayLoadingLiveData().observe(this, Observer { displayProgress ->
             swipe_refresh_layout.isRefreshing = displayProgress
         })
