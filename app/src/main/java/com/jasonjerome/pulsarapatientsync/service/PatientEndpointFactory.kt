@@ -3,6 +3,7 @@ package com.jasonjerome.pulsarapatientsync.service
 import android.content.Context
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.jasonjerome.pulsarapatientsync.BuildConfig
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.standalone.KoinComponent
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 object PatientEndpointFactory : KoinComponent {
 
-    private const val BASE_URL = "https://change-me"
+    private const val BASE_URL = BuildConfig.PATIENT_ENDPOINT
 
     fun makeEndpointService(): PatientEndpointService {
         return Retrofit.Builder()
@@ -25,9 +26,19 @@ object PatientEndpointFactory : KoinComponent {
     }
 
     private fun makeOkHttpClient(): OkHttpClient {
-        val localClient: LocalClient by inject()
+
+        if (BASE_URL.compareTo(BuildConfig.TEST_ENDPOINT, true) == 0) {
+            val localClient: LocalClient by inject()
+            return OkHttpClient.Builder()
+                .addInterceptor(localClient)
+                .addInterceptor(makeLoggingInterceptor())
+                .connectTimeout(120, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(90, TimeUnit.SECONDS)
+                .build()
+        }
+
         return OkHttpClient.Builder()
-            .addInterceptor(localClient)
             .addInterceptor(makeLoggingInterceptor())
             .connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
@@ -43,6 +54,10 @@ object PatientEndpointFactory : KoinComponent {
 
 }
 
+/**
+ * This is a simple way to mock an endpoint for development
+ * I left this here to show some of my work
+ */
 class LocalClient(private val context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {

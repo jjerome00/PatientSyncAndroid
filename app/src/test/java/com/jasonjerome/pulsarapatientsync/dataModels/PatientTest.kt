@@ -1,6 +1,7 @@
 package com.jasonjerome.pulsarapatientsync.dataModels
 
 import com.google.gson.Gson
+import junit.framework.Assert.assertEquals
 import org.junit.Test
 
 class PatientTest {
@@ -13,7 +14,9 @@ class PatientTest {
         // WHEN the json is parsed into the data class
         val patient = Gson().fromJson(json, Patient::class.java)
 
-        // THEN the parser will not throw an error (failing the test)
+        // THEN I get the expected parsed results
+        assertEquals("Jason", patient.firstName)
+        assertEquals("Jerome", patient.lastName)
     }
 
 }
