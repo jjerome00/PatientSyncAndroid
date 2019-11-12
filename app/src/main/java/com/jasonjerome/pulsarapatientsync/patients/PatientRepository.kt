@@ -4,18 +4,23 @@ import androidx.lifecycle.LiveData
 import com.jasonjerome.pulsarapatientsync.dataModels.Patient
 import com.jasonjerome.pulsarapatientsync.patients.db.PatientListDAO
 import com.jasonjerome.pulsarapatientsync.service.PatientEndpointFactory
+import com.jasonjerome.pulsarapatientsync.util.NetworkConnectivity
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.standalone.KoinComponent
 import retrofit2.HttpException
 import java.io.IOException
 
 class PatientRepository(
-    private val patientListDAO: PatientListDAO
+    private val patientListDAO: PatientListDAO,
+    private val network: NetworkConnectivity
 ) : KoinComponent {
 
     fun loadPatients(): LiveData<List<Patient>> {
-        loadPatientsFromWeb()
+        if (network.isNetworkAvailable()) {
+            loadPatientsFromWeb()
+        }
         return loadPatientsFromDB()
     }
 
@@ -30,20 +35,20 @@ class PatientRepository(
             try {
                 val request = patientEndpoint.getPatientResponseAsync()
                 val response = request.await()
-                response.body()?.let { response ->
-                    if (response.message.compareTo("success")  == 0) {
-                        val patientList = response.data
+                response.body()?.let { responseObject ->
+                    if (responseObject.message.compareTo("success")  == 0) {
+                        val patientList = responseObject.data
                         patientList.forEach {
                             patientListDAO.insert(it)
                         }
                     }
                 }
             } catch (e: IOException) {
-                error { "io exception: $e" }
+                cancel(e.localizedMessage)
             } catch (e: HttpException) {
-                error { "http exception: $e" }
+                cancel(e.localizedMessage)
             } catch (e: Throwable) {
-                error { "throwable exception: $e" }
+                cancel(e.localizedMessage)
             }
         }
     }
