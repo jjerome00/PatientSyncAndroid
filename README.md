@@ -1,4 +1,4 @@
-# PulsaraPatientSync
+# PatientSync for Android
 Jason Jerome Candidate Project - Patient Sync
 
 
