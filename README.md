@@ -1,7 +1,7 @@
 # PatientSync for Android
-Jason Jerome Candidate Project - Patient Sync
+Patient Sync
 
-This was for a take-home assignment. The assignment was to write an Android app that would get its data from an API (also written by me). You can view the Server component here: https://github.com/jjerome00/PatientServer
+This is an Android app that demonstrates getting its data from an API. You can view the Server component here: https://github.com/jjerome00/PatientServer
 
 ## Setup
 
